@@ -1,29 +1,50 @@
-﻿// exercise2_buggy.cpp
+﻿
 #include "stdafx.h"
 #include <iostream>
 using namespace std;
 
+// Функция изменяет аргументы: первый по ссылке, второй по указателю
+void modifyValues(int& refArg, int* ptrArg)
+{
+    refArg = refArg * 2;      // изменяем через ссылку
+    *ptrArg = *ptrArg * 3;    // изменяем через указатель
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-    int* x, * y, * z, d;
+    setlocale(LC_ALL, "Russian");
 
-    cout << "3 number, please" << endl;
-    cin >> *x >> *y >> *z;  // ОШИБКА: указатели не инициализированы!
+    // ИСПРАВЛЕНО: создаём обычные переменные
+    int x_val, y_val, z_val, d;
 
-    if (x > y)  // ОШИБКА: сравниваем адреса, а не значения
+    // ИСПРАВЛЕНО: указатели инициализируем адресами переменных
+    int* x = &x_val, * y = &y_val, * z = &z_val;
+
+    cout << "Введите 3 числа:" << endl;
+    cin >> *x >> *y >> *z;
+
+    //  ИСПРАВЛЕНО: сравниваем значения (*x, *y, *z), а не адреса
+    if (*x > *y)
     {
-        d = *x; x = y; *y = d;
+        d = *x; *x = *y; *y = d;
     }
-    if (x > z)
+    if (*x > *z)
     {
-        d = *z; z = x; *x = d;
+        d = *z; *z = *x; *x = d;
     }
-    if (y > z)
+    if (*y > *z)
     {
-        d = *y; y = z; *z = d;
+        d = *y; *y = *z; *z = d;
     }
 
-    cout << "x=" << x << " y=" << y << " z=" << z << endl;
+    cout << "x=" << *x << " y=" << *y << " z=" << *z;
+    cout << " difference = " << *z - *x << endl;
+
+    // Демонстрация работы ссылок и указателей
+    int a = 5, b = 10;
+    cout << "\nДо: a=" << a << ", b=" << b << endl;
+    modifyValues(a, &b);
+    cout << "После: a=" << a << ", b=" << b << endl;
 
     return 0;
 }
